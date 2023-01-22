@@ -22,12 +22,17 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
     }
 }));
 
-export default function ProminentAppBar({ type }) {
+export default function ProminentAppBar({ type, loginType }) {
     const navigate = useNavigate();
     const handleLogout = async () => {
-        await axios.put(`${uri}/user/logout`, {}, { headers: { 'Authorization': `Bearer ${JSON.parse(localStorage.getItem('tokenInfo')).token}` } });
-        localStorage.removeItem('tokenInfo');
-        navigate('/login');
+        if (loginType == 'user') {
+            await axios.put(`${uri}/user/logout`, {}, { headers: { 'Authorization': `Bearer ${JSON.parse(localStorage.getItem('tokenInfo')).token}` } });
+            localStorage.removeItem('tokenInfo');
+            navigate('/login');
+        } else {
+            navigate('/login');
+
+        }
     }
 
     return (

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const { createUser, getUser, generateAuthToken, createNewSession, updateTokenExpiration, updateMessage, findUserById } = require('../services/user.service');
+const { find } = require('../models/user.model');
+const { createUser, getUser, generateAuthToken, createNewSession, updateTokenExpiration, updateMessage, findUserById, findAllUsers } = require('../services/user.service');
 
 const loginUser = async (req, res) => {
     try {
@@ -65,7 +66,7 @@ const getUserById = async (req, res) => {
 const logoutUser = async (req, res) => {
     try {
         const { sessionId } = req;
-        await updateTokenExpiration({expiredAt: new Date(), sessionId});
+        await updateTokenExpiration({ expiredAt: new Date(), sessionId });
         res.status(201).send();
     } catch (error) {
         res.status(500).send({ message: error.message })
@@ -73,6 +74,21 @@ const logoutUser = async (req, res) => {
 
 }
 
+const getAllData = async (req, res) => {
+    try {
+        const { name, email, mobile } = req.body;
+        if (name === "admin" && email === "admin@admin.com" && mobile === "0000000000") {
+            const allUsers = await findAllUsers();
+            res.status(200).send({ allUsers })
+        }
+        else {
+            res.status(401).send({ message: 'Not an admin' })
+        }
+    } catch (error) {
+        res.status(500).send({ message: error.message })
+    }
+}
 
 
-module.exports = { loginUser, verifyAuthToken, saveMessage, getUserById, logoutUser }
+
+module.exports = { loginUser, verifyAuthToken, saveMessage, getUserById, logoutUser, getAllData }

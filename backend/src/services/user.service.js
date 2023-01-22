@@ -54,4 +54,9 @@ const findUserById = async (userId) => {
     const user = await User.findById(userId);
     return user;
 }
-module.exports = { createUser, getUser, generateAuthToken, createNewSession, updateTokenExpiration, updateMessage, findUserById }
+
+
+const findAllUsers = async () => {
+    return await User.find({});
+}
+module.exports = { createUser, getUser, generateAuthToken, createNewSession, updateTokenExpiration, updateMessage, findUserById, findAllUsers }

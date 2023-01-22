@@ -6,7 +6,7 @@ import uri from '../config/config';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
-const Home = () => {
+const Home = ({ allUsers, loginType }) => {
     const [message, setMessage] = useState('');
     const [user, setUser] = useState({});
     const navigate = useNavigate();
@@ -57,59 +57,86 @@ const Home = () => {
     }
 
     useEffect(() => {
-        const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'));
-        if (tokenInfo) {
-            verifyToken(tokenInfo.token, tokenInfo.expires);
-            getUser();
+        if (loginType === 'user') {
+            const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'));
+            if (tokenInfo) {
+                verifyToken(tokenInfo.token, tokenInfo.expires);
+                getUser();
 
-        }
-        else {
-            navigate('/login')
+            }
+            else {
+                navigate('/login')
+            }
+
         }
     }, []);
 
     return (
         <>
-            <ProminentAppBar type="home"/>
-            <Box style={{ height: "60vh", width: "100vw", display: "flex", flexDirection: "column", alignItems: "center" }} mt={3}>
+            <ProminentAppBar type="home" loginType={loginType}/>
+            {loginType === 'user' && <>
+                <Box style={{ height: "60vh", width: "100vw", display: "flex", flexDirection: "column", alignItems: "center" }} mt={3}>
 
-                <form style={{ display: "flex", flexDirection: "column", width: "50vw", maxWidth: "900px", alignItems: "center" }} onSubmit={submitMessage}>
-                    <TextField
-                        id="outlined-multiline-static"
-                        label="Enter message"
-                        multiline
-                        rows={10}
-                        variant="outlined"
-                        sx={{ width: "40vw" }}
-                        value={message}
-                        onChange={handleMessageChange}
-                    />
-                    <Button type='submit' variant="contained">Save Message</Button>
-                </form>
-            </Box>
+                    <form style={{ display: "flex", flexDirection: "column", width: "50vw", maxWidth: "900px", alignItems: "center" }} onSubmit={submitMessage}>
+                        <TextField
+                            id="outlined-multiline-static"
+                            label="Enter message"
+                            multiline
+                            rows={10}
+                            variant="outlined"
+                            sx={{ width: "40vw" }}
+                            value={message}
+                            onChange={handleMessageChange}
+                        />
+                        <Button type='submit' variant="contained">Save Message</Button>
+                    </form>
+                </Box>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Session Number</th>
-                        <th>Start Time</th>
-                        <th>End Time</th>
-                        <th>Duration</th>
-                        <th>Messages</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        user.sessions?.map((session, index) => (<tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{new Date(session.startedAt).toLocaleString(undefined, { timeZone: 'Asia/Kolkata' })}</td>
-                            <td>{new Date(session.endedAt).toLocaleString(undefined, { timeZone: 'Asia/Kolkata' })}</td>
-                            <td>{session.endedAt == null ? "Session Active" : `${((new Date(session.endedAt).getTime() - new Date(session.startedAt).getTime()) / 60000).toFixed(2)} mins`}</td>
-                            <td>{session.messages.join(", ")}</td>
-                        </tr>))
-                    }
-                </tbody>
-            </table>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Session Number</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Duration</th>
+                            <th>Messages</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            user.sessions?.map((session, index) => (<tr key={index}>
+                                <td>{index + 1}</td>
+                                <td>{new Date(session.startedAt).toLocaleString(undefined, { timeZone: 'Asia/Kolkata' })}</td>
+                                <td>{new Date(session.endedAt).toLocaleString(undefined, { timeZone: 'Asia/Kolkata' })}</td>
+                                <td>{session.endedAt == null ? "Session Active" : `${((new Date(session.endedAt).getTime() - new Date(session.startedAt).getTime()) / 60000).toFixed(2)} mins`}</td>
+                                <td>{session.messages.join(", ")}</td>
+                            </tr>))
+                        }
+                    </tbody>
+                </table>
+            </>}
+            {
+                loginType === 'admin' && <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Mobile Number</th>
+                            <th>Messages</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            allUsers?.map((user, index) => (<tr key={index}>
+                                <td>{user.name}</td>
+                                <td>{user.email}</td>
+                                <td>{user.mobile}</td>
+                                <td>{user.sessions?.map((session, index)=>(<span key = {index}>{session.messages.join(", ")}</span>))}</td>
+                            </tr>))
+                        }
+                    </tbody>
+                </table>
+            }
         </>
     )
 }
