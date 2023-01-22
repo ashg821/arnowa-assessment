@@ -62,6 +62,17 @@ const getUserById = async (req, res) => {
     }
 }
 
+const logoutUser = async (req, res) => {
+    try {
+        const { sessionId } = req;
+        await updateTokenExpiration({expiredAt: new Date(), sessionId});
+        res.status(201).send();
+    } catch (error) {
+        res.status(500).send({ message: error.message })
+    }
+
+}
 
 
-module.exports = { loginUser, verifyAuthToken, saveMessage, getUserById }
+
+module.exports = { loginUser, verifyAuthToken, saveMessage, getUserById, logoutUser }

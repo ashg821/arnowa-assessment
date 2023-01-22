@@ -70,7 +70,7 @@ const Home = () => {
 
     return (
         <>
-            <ProminentAppBar />
+            <ProminentAppBar type="home"/>
             <Box style={{ height: "60vh", width: "100vw", display: "flex", flexDirection: "column", alignItems: "center" }} mt={3}>
 
                 <form style={{ display: "flex", flexDirection: "column", width: "50vw", maxWidth: "900px", alignItems: "center" }} onSubmit={submitMessage}>

@@ -49,7 +49,7 @@ const Login = ({ token }) => {
 
     return (
         <>
-            <ProminentAppBar />
+            <ProminentAppBar type='login'/>
             <Box style={{ height: "80vh", width: "100vw", display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <Typography variant="h3" gutterBottom mt={3}>
                     Login

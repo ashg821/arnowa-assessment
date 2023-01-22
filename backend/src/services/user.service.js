@@ -38,7 +38,9 @@ const generateAuthToken = async (user) => {
 
 
 const updateTokenExpiration = async ({ expiredAt, sessionId }) => {
+    console.log(expiredAt);
     await User.findOneAndUpdate({ "sessions._id": sessionId }, { $set: { "sessions.$.endedAt": expiredAt } });
+    return;
 }
 
 

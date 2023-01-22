@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
-// import AppBar from '@mui/material/AppBar';
-import { AppBar, Box, Toolbar, IconButton, Button } from '@mui/material';
-// import Toolbar from '@mui/material/Toolbar';
-// import IconButton from '@mui/material/IconButton';
-// import { MenuIcon, SearchIcon, MoreIcon } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
-// import SearchIcon from '@mui/icons-material/Search';
-// import MoreIcon from '@mui/icons-material/MoreVert';
+
+import { AppBar, Box, Button, Toolbar } from '@mui/material';
+import axios from 'axios';
+import uri from '../config/config';
+import { useNavigate } from 'react-router-dom';
+
+
+
 
 
 
@@ -22,36 +22,20 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
     }
 }));
 
-export default function ProminentAppBar({type}) {
+export default function ProminentAppBar({ type }) {
+    const navigate = useNavigate();
+    const handleLogout = async () => {
+        await axios.put(`${uri}/user/logout`, {}, { headers: { 'Authorization': `Bearer ${JSON.parse(localStorage.getItem('tokenInfo')).token}` } });
+        localStorage.removeItem('tokenInfo');
+        navigate('/login');
+    }
 
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static" style={{ backgroundColor: "rgba(255, 0, 0, 0.7)" }}>
-                <StyledToolbar>
-                    {/* <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        sx={{ mr: 2 }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
+                <StyledToolbar style={{ justifyContent: "flex-end" }}>
+                    {type === 'home' && <Button color='secondary' onClick={handleLogout}>LOGOUT</Button>}
 
-
-                    <IconButton size="large" aria-label="search" color="inherit">
-                        <SearchIcon />
-                    </IconButton>
-                    <IconButton
-                        size="large"
-                        aria-label="display more actions"
-                        edge="end"
-                        color="inherit"
-                    >
-                        <MoreIcon />
-                    </IconButton> */}
-                   {/* { type === 'register' && <Link to="/login" style={{textDecoration: "none"}}><Button variant="text" color='secondary'>Login</Button></Link>} */}
-                    
                 </StyledToolbar>
             </AppBar>
         </Box>
