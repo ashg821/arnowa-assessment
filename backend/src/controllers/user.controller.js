@@ -30,12 +30,18 @@ const verifyAuthToken = async (req, res) => {
                 await updateTokenExpiration({ expiredAt, sessionId: payload.sessionId })
                 return res.status(403).send({ message: error.message });
             }
-            res.status(200).send({message: "Continue Session"})
+            res.status(200).send({ message: "Continue Session" })
         });
     }
     else res.sendStatus(401);
 }
 
+
+const saveMessage = async (req, res) => {
+    const { userId, sessionId } = req;
+    const { message } = req.body;
+    
+}
 
 
 
