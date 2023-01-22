@@ -3,10 +3,14 @@ import ProminentAppBar from './ProminentAppBar'
 import { Button, TextField, Box } from '@mui/material'
 
 const Home = () => {
-    const [message, setMessage] = useState 
+    const [message, setMessage] = useState('');
 
     const submitMessage = () => {
 
+    }
+
+    const handleMessageChange = (event) => {
+        setMessage(event.target.value);
     }
 
     return (
@@ -22,6 +26,8 @@ const Home = () => {
                         rows={10}
                         variant="outlined"
                         sx={{ width: "40vw" }}
+                        value={message}
+                        onChange={handleMessageChange}
                     />
                     <Button type='submit' variant="contained" onClick={submitMessage}>Save Message</Button>
                 </form>
