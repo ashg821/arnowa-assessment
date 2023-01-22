@@ -57,7 +57,7 @@ const Home = ({ allUsers, loginType }) => {
     }
 
     useEffect(() => {
-        if (loginType === 'user') {
+        if (loginType !== 'admin') {
             const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'));
             if (tokenInfo) {
                 verifyToken(tokenInfo.token, tokenInfo.expires);
@@ -65,7 +65,7 @@ const Home = ({ allUsers, loginType }) => {
 
             }
             else {
-                navigate('/login')
+                navigate('/login');
             }
 
         }
