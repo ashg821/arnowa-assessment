@@ -13,9 +13,9 @@ const Home = () => {
     const { enqueueSnackbar } = useSnackbar();
 
     const getUser = async () => {
-        console.log('I am being called');
-        const { data } = axios.get(`${uri}/user/info`, { headers: { 'Authorization': `Bearer ${JSON.parse(localStorage.getItem('tokenInfo')).token}` } });
-        console.log(data);
+
+        const { data } = await axios.get(`${uri}/user/info`, { headers: { 'Authorization': `Bearer ${JSON.parse(localStorage.getItem('tokenInfo')).token}` } });
+        setUser(data.user);
     }
 
     const submitMessage = async (event) => {
@@ -71,7 +71,7 @@ const Home = () => {
     return (
         <>
             <ProminentAppBar />
-            <Box style={{ height: "80vh", width: "100vw", display: "flex", flexDirection: "column", alignItems: "center" }} mt={3}>
+            <Box style={{ height: "60vh", width: "100vw", display: "flex", flexDirection: "column", alignItems: "center" }} mt={3}>
 
                 <form style={{ display: "flex", flexDirection: "column", width: "50vw", maxWidth: "900px", alignItems: "center" }} onSubmit={submitMessage}>
                     <TextField
@@ -87,6 +87,29 @@ const Home = () => {
                     <Button type='submit' variant="contained">Save Message</Button>
                 </form>
             </Box>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Session Number</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Duration</th>
+                        <th>Messages</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        user.sessions?.map((session, index) => (<tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{new Date(session.startedAt).toLocaleString(undefined, { timeZone: 'Asia/Kolkata' })}</td>
+                            <td>{new Date(session.endedAt).toLocaleString(undefined, { timeZone: 'Asia/Kolkata' })}</td>
+                            <td>{session.endedAt == null ? "Session Active" : `${((new Date(session.endedAt).getTime() - new Date(session.startedAt).getTime()) / 60000).toFixed(2)} mins`}</td>
+                            <td>{session.messages.join(", ")}</td>
+                        </tr>))
+                    }
+                </tbody>
+            </table>
         </>
     )
 }
