@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { findOneAndUpdate } = require('../models/user.model');
 
 const User = require('../models/user.model');
 
@@ -41,4 +42,10 @@ const updateTokenExpiration = async ({ expiredAt, sessionId }) => {
     await User.findOneAndUpdate({ "sessions._id": sessionId }, { $set: { "sessions.$.endedAt": expiredAt } });
 }
 
-module.exports = { createUser, getUser, generateAuthToken, createNewSession, updateTokenExpiration }
+
+const updateMessage = async (userId, sessionId, message) => {
+    const user = await User.findOneAndUpdate({ _id: userId, "sessions._id": sessionId }, { $push: { "sessions.$.messages": message } }, { new: true });
+    return user;
+}
+
+module.exports = { createUser, getUser, generateAuthToken, createNewSession, updateTokenExpiration, updateMessage }

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { createUser, getUser, generateAuthToken, createNewSession, updateTokenExpiration } = require('../services/user.service');
+const { createUser, getUser, generateAuthToken, createNewSession, updateTokenExpiration, updateMessage } = require('../services/user.service');
 
 const loginUser = async (req, res) => {
     try {
@@ -38,11 +38,19 @@ const verifyAuthToken = async (req, res) => {
 
 
 const saveMessage = async (req, res) => {
-    const { userId, sessionId } = req;
-    const { message } = req.body;
-    
+    try {
+        const { userId, sessionId } = req;
+        const { message } = req.body;
+
+        const user = await updateMessage(userId, sessionId, message);
+
+        res.status(201).send({ user });
+    } catch (error) {
+        res.status(500).send({ message: error.message })
+    }
+
 }
 
 
 
-module.exports = { loginUser, verifyAuthToken }
+module.exports = { loginUser, verifyAuthToken, saveMessage}

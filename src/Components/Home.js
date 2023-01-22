@@ -8,6 +8,7 @@ import { useSnackbar } from 'notistack';
 
 const Home = () => {
     const [message, setMessage] = useState('');
+    const [user, setUser] = useState({});
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
 
@@ -17,7 +18,8 @@ const Home = () => {
             const messageString = message.trim();
             if (messageString === "") enqueueSnackbar('Enter atleast 1 character', { variant: 'warning' });
             else {
-                await axios.put(`${uri}/user/addMessage`, { message: messageString }, { headers: { 'Authorization': `Bearer ${JSON.parse(localStorage.getItem('tokenInfo')).token}` } })
+                const { data } = await axios.put(`${uri}/user/addMessage`, { message: messageString }, { headers: { 'Authorization': `Bearer ${JSON.parse(localStorage.getItem('tokenInfo')).token}` } });
+                console.log(data);
             }
         } catch (error) {
 
@@ -39,7 +41,10 @@ const Home = () => {
 
         } catch (error) {
             if (error.response) {
-                if (error.response.status === 403) navigate('/login');
+                if (error.response.status === 403) {
+                    enqueueSnackbar('Session expired', { variant: "error" });
+                    navigate('/login')
+                };
             }
         }
     }
