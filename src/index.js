@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { SnackbarProvider } from 'notistack';
 
 
 const theme = createTheme({
@@ -19,9 +20,11 @@ const theme = createTheme({
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <ThemeProvider theme={theme}>
-        <App />
-    </ThemeProvider>
+    <SnackbarProvider maxSnack={3}>
+        <ThemeProvider theme={theme}>
+            <App />
+        </ThemeProvider>
+    </SnackbarProvider>
 );
 
 
