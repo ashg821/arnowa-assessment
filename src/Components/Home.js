@@ -12,6 +12,12 @@ const Home = () => {
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
 
+    const getUser = async () => {
+        console.log('I am being called');
+        const { data } = axios.get(`${uri}/user/info`, { headers: { 'Authorization': `Bearer ${JSON.parse(localStorage.getItem('tokenInfo')).token}` } });
+        console.log(data);
+    }
+
     const submitMessage = async (event) => {
         event.preventDefault();
         try {
@@ -19,7 +25,8 @@ const Home = () => {
             if (messageString === "") enqueueSnackbar('Enter atleast 1 character', { variant: 'warning' });
             else {
                 const { data } = await axios.put(`${uri}/user/addMessage`, { message: messageString }, { headers: { 'Authorization': `Bearer ${JSON.parse(localStorage.getItem('tokenInfo')).token}` } });
-                console.log(data);
+                setUser(data.user);
+                setMessage("");
             }
         } catch (error) {
 
@@ -53,6 +60,8 @@ const Home = () => {
         const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'));
         if (tokenInfo) {
             verifyToken(tokenInfo.token, tokenInfo.expires);
+            getUser();
+
         }
         else {
             navigate('/login')

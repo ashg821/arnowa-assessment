@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const { findOneAndUpdate } = require('../models/user.model');
 
 const User = require('../models/user.model');
 
@@ -48,4 +47,9 @@ const updateMessage = async (userId, sessionId, message) => {
     return user;
 }
 
-module.exports = { createUser, getUser, generateAuthToken, createNewSession, updateTokenExpiration, updateMessage }
+
+const findUserById = async (userId) => {
+    const user = await User.findById(userId);
+    return user;
+}
+module.exports = { createUser, getUser, generateAuthToken, createNewSession, updateTokenExpiration, updateMessage, findUserById }
