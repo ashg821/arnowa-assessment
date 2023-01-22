@@ -6,7 +6,7 @@ import uri from '../config/config'
 import { useNavigate } from 'react-router-dom';
 
 
-const Login = ({ token }) => {
+const Login = ({ setAllUsers, changeLoginType }) => {
     const [formData, setFormData] = useState({ name: "", email: "", mobile: "" });
 
     const navigate = useNavigate();
@@ -19,11 +19,23 @@ const Login = ({ token }) => {
     const handleFormSubmit = async (event) => {
         event.preventDefault();
         try {
-            const { data } = await axios.post(`${uri}/user/login`, { ...formData, startedAt: new Date() });
-            localStorage.setItem('tokenInfo', JSON.stringify(data.tokenInfo));
-            navigate('/home');
-        } catch (error) {
+            if (formData.name === "admin" && formData.email === "admin@admin.com" && formData.mobile === "0000000000") {
+                console.log('admin');
+                changeLoginType('admin');
+                const { data } = await axios.post(`${uri}/user/all`, { ...formData });
+                setAllUsers(data.allUsers);
+                navigate('/home');
 
+            }
+            else {
+                changeLoginType('user');
+                const { data } = await axios.post(`${uri}/user/login`, { ...formData, startedAt: new Date() });
+                localStorage.setItem('tokenInfo', JSON.stringify(data.tokenInfo));
+                navigate('/home');
+
+            }
+        } catch (error) {
+            
         }
 
     }
@@ -49,7 +61,7 @@ const Login = ({ token }) => {
 
     return (
         <>
-            <ProminentAppBar type='login'/>
+            <ProminentAppBar type='login' />
             <Box style={{ height: "80vh", width: "100vw", display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <Typography variant="h3" gutterBottom mt={3}>
                     Login
